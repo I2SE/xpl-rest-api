@@ -18,5 +18,5 @@ Contents:
    url_mapping
    http_verbs
    parameters
-   error_handling
    json_properties
+   error_handling

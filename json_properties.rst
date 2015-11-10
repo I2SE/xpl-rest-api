@@ -15,21 +15,28 @@ As already described above, the channel **class** has only two valid values:
 ``io`` and ``serial``.
 
 The possible physical channel **types** depend on the physical channel class:
+
   * for class ``serial``: this is one of the strings ``rs485``, ``rs422``, ``rs232``, ``can``, ``mbus``, ``wmbus``, ``enocean``
   * for class ``io``: this is one of the strings ``di``, ``do``, ``s0``, ``ai``, ``ao``
 
 The possible physical channel **modes** depends on the physical channel class and type:
+
   * for class ``io``:
+
       - type ``di``: ``normal``, ``flipflop``
       - type ``do``: ``normal``, ``pulse``
       - type ``ai``: ``0-10 V``, ``1-10 V``, ``0-20 mA``, ``4-20 mA``
+
   * for class ``serial``:
+
     This is a integer, where each bit reflects whether a given service is
     enabled for this physical serial channel.
 
 The property **label** is common to all physical channels, all other properties
 depend on the channel type and the hardware capabilities of the individual
 channel. The following list is an overview of the actual available properties:
+
+.. tabularcolumns:: |L|L|C|L|L|
 
 +-------------------+--------------+-------------------------------------------------------------------------+---------------------------------------------------------------------------+
 |     Property      |  Property    | Available for channel class                                             | Description                                                               |
@@ -123,7 +130,7 @@ is the channel **type**, which can be ``digitial``, ``analog``, or ``serial``.
 All other channel properties depend on the channel type as describe in the following table:
 
 +------------------+------------+------------------------------+-----------------------------------------------------------------------------------------------------+
-|     Property     |  Property  | Available for channel type   | Description                                                                                         |
+| Property         |  Property  | Available for channel type   | Description                                                                                         |
 |                  |  class     +---------+--------+-----------+                                                                                                     |
 |                  |            | digital | analog | serial    |                                                                                                     |
 +==================+============+=========+========+===========+=====================================================================================================+
