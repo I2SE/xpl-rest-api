@@ -36,113 +36,385 @@ The property **label** is common to all physical channels, all other properties
 depend on the channel type and the hardware capabilities of the individual
 channel. The following list is an overview of the actual available properties:
 
-.. tabularcolumns:: |L|L|C|L|L|
+class
+  **Property class**: structural
 
-+-------------------+--------------+-------------------------------------------------------------------------+---------------------------------------------------------------------------+
-|     Property      |  Property    | Available for channel class                                             | Description                                                               |
-|                   |  class       +--------+----------------------------------------------------------------+                                                                           |
-|                   |              | serial | io                                                             |                                                                           |
-+===================+==============+========+================================================================+===========================================================================+
-| class             | structural   | yes    | yes                                                            | Channel class (``serial``, ``io``)                                        |
-+-------------------+--------------+--------+----------------------------------------------------------------+---------------------------------------------------------------------------+
-| id                | structural   | yes    | yes                                                            | Channel's unique ID (1-65535).                                            |
-+-------------------+--------------+--------+----------------------------------------------------------------+---------------------------------------------------------------------------+
-| label             | config       | yes    | yes                                                            | User-defined channel name/label                                           |
-+-------------------+--------------+--------+----------------------------------------------------------------+---------------------------------------------------------------------------+
-| enabled           | config       | yes    | yes                                                            | Indicator whether this channel is used at all.                            |
-+-------------------+--------------+--------+----------------------------------------------------------------+---------------------------------------------------------------------------+
-| virtual_channel   | config       | yes    | yes                                                            | The virtual channel id of the linked virtual channel, zero by default     |
-+-------------------+--------------+--------+----------------------------------------------------------------+---------------------------------------------------------------------------+
-| type              | config       | yes    | yes                                                            | Channel type (depends on class, see above)                                |
-+-------------------+--------------+--------+----------------------------------------------------------------+---------------------------------------------------------------------------+
-| mode              | config       | yes    | yes                                                            | Operation mode (depends on class and type, see above)                     |
-+-------------------+--------------+--------+----------------------------------------------------------------+---------------------------------------------------------------------------+
-| pullup            | config       | no     | only when type is ``di``                                       | 0 or 1, to disable/enable an internal pull-up resistor on this channel    |
-+-------------------+--------------+--------+----------------------------------------------------------------+---------------------------------------------------------------------------+
-| level             | config       | no     | only when type is ``di`` and mode is ``normal``, or type       | ``direct`` or ``inverted``                                                |
-|                   |              |        | is ``do``                                                      |                                                                           |
-+-------------------+--------------+--------+----------------------------------------------------------------+---------------------------------------------------------------------------+
-| edge              | config       | no     | only when type is ``di`` and mode is ``flipflop``              | Trigger edge: ``falling`` or ``rising``                                   |
-+-------------------+--------------+--------+----------------------------------------------------------------+---------------------------------------------------------------------------+
-| delay_on          | config       | no     | only when type is ``do``                                       | Delay on time (in ms)                                                     |
-+-------------------+--------------+--------+----------------------------------------------------------------+---------------------------------------------------------------------------+
-| delay_off         | config       | no     | only when type is ``do`` and mode is ``normal``                | Delay off time (in ms)                                                    |
-+-------------------+--------------+--------+----------------------------------------------------------------+---------------------------------------------------------------------------+
-| width             | config       | no     | only when type is ``do`` and mode is ``pulse``                 | Pulse width (in ms)                                                       |
-+-------------------+--------------+--------+----------------------------------------------------------------+---------------------------------------------------------------------------+
-| threshold         | config       | no     | only when type is ``ai``, or type is ``di`` and pullup is      | Voltage level (normalized 16-bit value) to detect the input as logical 1. |
-|                   |              |        | disabled                                                       |                                                                           |
-+-------------------+--------------+--------+----------------------------------------------------------------+---------------------------------------------------------------------------+
-| offset            | config       | no     | only when type is ``s0``                                       | User-supplied value to calculate the current energy reading.              |
-+-------------------+--------------+--------+----------------------------------------------------------------+---------------------------------------------------------------------------+
-| pulses_per_unit   | config       | no     | only when type is ``s0``                                       | User-supplied value to calculate the current energy reading.              |
-+-------------------+--------------+--------+----------------------------------------------------------------+---------------------------------------------------------------------------+
-| unit              | config/state | no     | only when type is ``ai`` or type is ``s0``                     | For ``s0`` this is a user-supplied string, fixed ``mA`` or                |
-|                   |              |        |                                                                | ``V`` otherwise.                                                          |
-+-------------------+--------------+--------+----------------------------------------------------------------+---------------------------------------------------------------------------+
-| value             | state        | no     | yes                                                            | This is the current/actual value of this channel.                         |
-+-------------------+--------------+--------+----------------------------------------------------------------+---------------------------------------------------------------------------+
-| normalized_value  | state        | no     | only when type is ``ai``                                       | Current channel value mapped into a 16-bit value, i.e. 0-65535            |
-+-------------------+--------------+--------+----------------------------------------------------------------+---------------------------------------------------------------------------+
-| raw_value         | state        | no     | only when type is ``s0``                                       | Contains the raw value of the internal impulse counter                    |
-+-------------------+--------------+--------+----------------------------------------------------------------+---------------------------------------------------------------------------+
-| baudrate          | config       | yes    | no                                                             | Current baudrate                                                          |
-+-------------------+--------------+--------+----------------------------------------------------------------+---------------------------------------------------------------------------+
-| databits          | config       | yes    | no                                                             | Current count of databits (integer; 7 or 8)                               |
-+-------------------+--------------+--------+----------------------------------------------------------------+---------------------------------------------------------------------------+
-| parity            | config       | yes    | no                                                             | Current parity (string; ``none``, ``odd``, ``even``)                      |
-+-------------------+--------------+--------+----------------------------------------------------------------+---------------------------------------------------------------------------+
-| stopbits          | config       | yes    | no                                                             | Current count of stopbits (integer; 1)                                    |
-+-------------------+--------------+--------+----------------------------------------------------------------+---------------------------------------------------------------------------+
-| port              | config       | yes    | no                                                             | Port number of TCP raw socket or Telnet server bound to this channel      |
-+-------------------+--------------+--------+----------------------------------------------------------------+---------------------------------------------------------------------------+
-| idle_timeout      | config       | yes    | no                                                             | Idle time after which a TCP/Telnet connection is terminated automatically |
-+-------------------+--------------+--------+----------------------------------------------------------------+---------------------------------------------------------------------------+
-| flags             | config       | yes    | no                                                             | Array which contains various flags of the physical serial channel:        |
-|                   |              |        |                                                                |                                                                           |
-|                   |              |        |                                                                |   - ``sw_mode``: operation mode (*type*) is software switchable (e.g.     |
-|                   |              |        |                                                                |     RS-232 vs. RS-485)                                                    |
-|                   |              |        |                                                                |   - ``sw_ctrl_local``: baudrate, databits, parity and stopbits can be     |
-|                   |              |        |                                                                |     configured via web frontend                                           |
-|                   |              |        |                                                                |   - ``sw_ctrl_remote``: defaults for baudrate, databits, parity and       |
-|                   |              |        |                                                                |     stopbits can be configured via web frontend and                       |
-|                   |              |        |                                                                |     it's possible to switch these settings via                            |
-|                   |              |        |                                                                |     RFC2217 by a connected client                                         |
-+-------------------+--------------+--------+----------------------------------------------------------------+---------------------------------------------------------------------------+
-| stats             | state        | yes    | no                                                             | Statistics counter of corresponding UART                                  |
-+-------------------+--------------+--------+----------------------------------------------------------------+---------------------------------------------------------------------------+
-| active_connection | state        | yes    | no                                                             | optional, Information about connected client of the TCP/Telnet server     |
-+-------------------+--------------+--------+----------------------------------------------------------------+---------------------------------------------------------------------------+
+  **Availability**: always
+
+  **JSON datatype**: string
+
+  **Description**: Channel class, that is ``serial`` or  ``io``.
+
+id
+  **Property class**: structural
+
+  **Availability**: always
+
+  **JSON datatype**: number
+
+  **Description**: Channel's unique ID (1-65535).
+
+label
+  **Property class**: config
+
+  **Availability**: always
+
+  **JSON datatype**: string
+
+  **Description**: User-defined name/label to associate the channel with, used e.g.
+  in the web frontend.
+
+enabled
+  **Property class**: config
+
+  **Availability**: class ``serial`` or class ``io``
+
+  **JSON datatype**: number
+
+  **Description**: Indicator whether this channel is used at all.
+
+virtual_channel
+  **Property class**: config
+
+  **Availability**: class ``serial`` or class ``io``
+
+  **JSON datatype**: number
+
+  **Description**: The virtual channel id of the linked virtual channel; zero
+  by default, which menas that no virtual channel is assigned.
+
+type
+  **Property class**: config
+
+  **Availability**: class ``serial`` or class ``io``
+
+  **JSON datatype**: string
+
+  **Description**: Channel type (depends on ``class``, see above).
+
+mode
+  **Property class**: config
+
+  **Availability**: class ``serial`` or class ``io``
+
+  **JSON datatype**: string
+
+  **Description**: Operation mode (depends on ``class`` and ``type``, see above).
+
+pullup
+  **Property class**: config
+
+  **Availability**: class ``io`` and type ``di``
+
+  **JSON datatype**: number
+
+  **Description**: Disable/enable an internal pull-up resistor on this channel.
+  At the moment, the only valid values are ``0`` or ``1``.
+
+level
+  **Property class**: config
+
+  **Availability**: class ``io`` and ((type ``di`` and mode ``normal``) or (type ``do``))
+
+  **JSON datatype**: string
+
+  **Description**: Value ``direct`` means, that a HIGH level on the wire is
+  mapped to logical 1 (aka *active high*); whereas ``inverted`` means the that
+  HIGH level is mapped to logical 0 (aka *active low*).
+
+edge
+  **Property class**: config
+
+  **Availability**: class ``io`` and type ``di`` and mode ``flipflop``
+
+  **JSON datatype**: string
+
+  **Description**: Edge of the signal to trigger: ``falling`` or ``rising``.
+
+delay_on
+  **Property class**: config
+
+  **Availability**: class ``io`` and type ``do``
+
+  **JSON datatype**: number
+
+  **Description**: Delay on time (in ms).
+
+delay_off
+  **Property class**: config
+
+  **Availability**: class ``io`` and type ``do`` and mode ``normal``
+
+  **JSON datatype**: number
+
+  **Description**: Delay off time (in ms).
+
+width
+  **Property class**: config
+
+  **Availability**: class ``io`` and type ``do`` and mode ``pulse``
+
+  **JSON datatype**: number
+
+  **Description**: Pulse width (in ms).
+
+threshold
+  **Property class**: config
+
+  **Availability**: class ``io`` and ((type ``ai``) or (type ``di`` and pullup ``0``))
+
+  **JSON datatype**: number
+
+  **Description**: Voltage level (normalized 16-bit value) to detect the
+  input as logical 1.
+
+offset
+  **Property class**: config
+
+  **Availability**: class ``io`` and type ``s0``
+
+  **JSON datatype**: number
+
+  **Description**: User-supplied value to calculate the current energy reading.
+
+pulses_per_unit
+  **Property class**: config
+
+  **Availability**: class ``io`` and type ``s0``
+
+  **JSON datatype**: number
+
+  **Description**: User-supplied value to calculate the current energy reading.
+
+unit
+  **Property class**: config (for class ``io`` and type ``s0``), state else
+
+  **Availability**: class ``io`` and (type ``s0`` or type ``ai``)
+
+  **JSON datatype**: string
+
+  **Description**: For a channel configured as S0 input, this is a user-supplied
+  string; for an channel configured as analog input, this is a fixed string
+  ``mA`` or  ``V`` depending on the physical capabilities/configuration of
+  the channel.
+
+value
+  **Property class**: state
+
+  **Availability**: class ``io``
+
+  **JSON datatype**: number
+
+  **Description**: This is the current/actual value of this channel. For an
+  analog or s0 channel, this is a floating point number which must be
+  interpreted together with ``unit``; for a digital channel, this can only
+  have the values ``0`` or ``1``.
+
+normalized_value
+  **Property class**: state
+
+  **Availability**: class ``io`` and type ``ai``
+
+  **JSON datatype**: number
+
+  **Description**: This is the current/actual value of this channel, mapped
+  into a 16-bit value, i.e. 0-65535. This way it is possible to
+  interconnect different analog types.
+
+raw_value
+  **Property class**: state
+
+  **Availability**: class ``io`` and type ``s0``
+
+  **JSON datatype**: number
+
+  **Description**: Contains the raw value of the internal impulse counter.
+
+baudrate
+  **Property class**: config
+
+  **Availability**: class ``serial``
+
+  **JSON datatype**: number
+
+  **Description**: Baudrate of the channel. It depends on the actual device,
+  which baudrates are possible at all.
+
+databits
+  **Property class**: config
+
+  **Availability**: class ``serial``
+
+  **JSON datatype**: number
+
+  **Description**: Count of databits of the channel. It depends on the actual
+  device capabilities, which values are supported. At the moment, this can
+  only be ``7`` or ``8``.
+
+parity
+  **Property class**: config
+
+  **Availability**: class ``serial``
+
+  **JSON datatype**: string
+
+  **Description**: Parity setting of the channel, that is ``none``, ``odd`` or
+  ``even``. Note, that not all combinations with *databits* and/or *stopbits*
+  might be possible, depending on the actual device capabilities.
+
+stopbits
+  **Property class**: config
+
+  **Availability**: class ``serial``
+
+  **JSON datatype**: number
+
+  **Description**: Count of stop bits used at the channel. Note, that not all
+  combinations with *databits* and/or *stopbits* might be possible, depending
+  on the actual device capabilities. For example, for all current XPL devices,
+  this is required to be ``1``.
+
+port
+  **Property class**: config
+
+  **Availability**: class ``serial``
+
+  **JSON datatype**: number
+
+  **Description**: Port number of TCP raw socket server or Telnet server
+  bound to this channel.
+
+idle_timeout
+  **Property class**: config
+
+  **Availability**: class ``serial``
+
+  **JSON datatype**: number
+
+  **Description**: Idle time after which a TCP/Telnet connection is terminated
+  automatically.
+
+flags
+  **Property class**: config
+
+  **Availability**: class ``serial``
+
+  **JSON datatype**: Array of strings
+
+  **Description**: Array which contains various flags of the physical serial
+  channel:
+
+    - ``sw_mode``: The operation mode (*type*) is software switchable (e.g.
+      RS-232 vs. RS-485). Whether this is supported depends on the actual
+      XPL device.
+
+    - ``sw_ctrl_local``: The settings *baudrate*, *databits*, *parity* and
+      *stopbits* can be configured via web frontend of the XPL device.
+
+      .. note::
+
+         A configured Telnet server on this physical channel still negotiates
+         RFC2217 in this case; however, requests to change the port settings
+         are silently ignored. A client can detect this situation when
+         requesting a change and still reading back the old settings afterwards.
+
+    - ``sw_ctrl_remote``: Defaults for *baudrate*, *databits*, *parity* and
+      *stopbits* can be configured via web frontend and take effect right after
+      power on of the XPL or after reboot. But it is possible for a
+      RFC2217-enabled client to switch these settings at run-time.
+
+stats
+  **Property class**: state
+
+  **Availability**: class ``serial``
+
+  **JSON datatype**: Object
+
+  **Description**: Statistics counter of corresponding UART.
+
+active_connection
+  **Property class**: state
+
+  **Availability**: class ``serial``
+
+  **JSON datatype**: Object
+
+  **Description**: This object is present only, when a client is connected to
+  the corresponding channel server (e.g. Telnet server). Then it contains
+  various information about the connected client.
 
 .. note::
 
-  The physical channel class ``serial`` does not has any property *value* as there is
-  no buffering and the data stream is considered as a transient state. That means, that it is not possible
-  to read any actual data upon request, but only receive a notification when data is transferred.
+  The physical channel class ``serial`` does not has any property *value* as
+  there is no buffering and the data stream is considered as a transient state.
+  That means, that it is not possible to read any actual data upon request,
+  but only receive a notification when data is transferred.
 
 
 Virtual channels
 ----------------
 
-As stated above, a virtual channel has an unique **id**. The next important property/attribute
-is the channel **type**, which can be ``digitial``, ``analog``, or ``serial``.
-(On database jargon, this is tuple (type, id) is the unique primary key.)
-All other channel properties depend on the channel type as describe in the following table:
+As stated above, a virtual channel has an unique **id**. The next important
+property/attribute is the channel **type**, which can be ``digitial``,
+``analog``, or ``serial``. (On database jargon, this is tuple (type, id) is
+the unique primary key.)
 
-+------------------+------------+------------------------------+-----------------------------------------------------------------------------------------------------+
-| Property         |  Property  | Available for channel type   | Description                                                                                         |
-|                  |  class     +---------+--------+-----------+                                                                                                     |
-|                  |            | digital | analog | serial    |                                                                                                     |
-+==================+============+=========+========+===========+=====================================================================================================+
-| id               | structural | yes     | yes    | yes       | Channel's unique ID (1-65535)                                                                       |
-+------------------+------------+---------+--------+-----------+-----------------------------------------------------------------------------------------------------+
-| type             | structural | yes     | yes    | yes       | Channel type (``digital``, ``analog``, ``serial``)                                                  |
-+------------------+------------+---------+--------+-----------+-----------------------------------------------------------------------------------------------------+
-| value            | state      | yes     | yes    | no        | This is the current/actual value of this channel                                                    |
-+------------------+------------+---------+--------+-----------+-----------------------------------------------------------------------------------------------------+
-| unit             | state      | no      | yes    | no        | This is an inherited property of the physical channel which feeds this virtual channel.             |
-+------------------+------------+---------+--------+-----------+-----------------------------------------------------------------------------------------------------+
-| normalized_value | state      | no      | yes    | no        | This is the current/actual value of this channel, normalized to an unsigned 16-bit value (0-65535). |
-+------------------+------------+---------+--------+-----------+-----------------------------------------------------------------------------------------------------+
-| stats            | state      | no      | no     | yes       | Statistics counter for the virtual serial channel                                                   |
-+------------------+------------+---------+--------+-----------+-----------------------------------------------------------------------------------------------------+
+All other channel properties depend on the channel type as describe in the
+following list:
+
+id
+  **Property class**: structural
+
+  **Availability**: always
+
+  **JSON datatype**: number
+
+  **Description**: Channel's unique ID (1-65535).
+
+type
+  **Property class**: structural
+
+  **Availability**: always
+
+  **JSON datatype**: number
+
+  **Description**: Virtual channel type, i.e. ``digital``, ``analog`` or ``serial``.
+
+value
+  **Property class**: state
+
+  **Availability**: type ``digital`` or type ``analog``
+
+  **JSON datatype**: number
+
+  **Description**: This is the current/actual value of this channel. See description
+  for physical channel property *value* for details.
+
+unit
+  **Property class**: state
+
+  **Availability**: type ``analog``
+
+  **JSON datatype**: string
+
+  **Description**: This is an inherited property of the physical channel which
+  feeds this virtual channel.
+
+normalized_value
+  **Property class**: state
+
+  **Availability**: type ``analog``
+
+  **JSON datatype**: string
+
+  **Description**: This is the current/actual value of this channel, normalized
+  to an unsigned 16-bit value (0-65535).
+
+stats
+  **Property class**: state
+
+  **Availability**: type ``serial``
+
+  **JSON datatype**: Object
+
+  **Description**: Statistics counter for the virtual serial channel.

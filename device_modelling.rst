@@ -2,7 +2,7 @@ Device modelling
 ================
 
 Before describing the API itself, it necessary to agree on a common wording and
-to understand some basic concepts which are implemented within the Marjoram
+to understand some basic concepts which are implemented within the XPL
 device family. The following chapters describe these concepts and introduce
 some terms used within this document and on the web front-end of each device.
 
@@ -36,6 +36,7 @@ positive integer number between 1 and 65535. By design, the virtual channel id z
 is invalid.
 
 Three different types of virtual channels exist:
+
   - digital virtual channels
   - analog virtual channels
   - serial virtual channels
@@ -73,7 +74,7 @@ channel. Then then physical channel acts as a value source for this channel or i
 by the virtual channel's value.
 
 Virtual channel data is exchanged via HTTP over UDP multicast packets.
-When assigning virtual channel to a physical one, then you enable the the generation
+When assigning virtual channel to a physical one, then you enable the generation
 and receiving of such multicast packets for this virtual (and thus physical) channel.
 
 However, you are not required to assign a virtual channel to a physical one. In this

@@ -1,10 +1,10 @@
-.. XPL Rail REST API documentation master file, created by
+.. XPL REST API documentation master file, created by
    sphinx-quickstart on Mon Nov  9 13:50:42 2015.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-XPL Rail REST API documentation
-===============================
+I2SE XPL devices REST API documentation
+=======================================
 
 Contents:
 

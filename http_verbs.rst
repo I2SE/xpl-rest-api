@@ -2,7 +2,7 @@ HTTP verbs
 ==========
 
 The RESTful approach strives to use appropriate HTTP verbs for each action. For a
-marjoram device, this only make limited sense: we have a fixed number of physical
+XPL device, this only make limited sense: we have a fixed number of physical
 channels which can be configured and/or their state can be queried. However, it is
 not possible to delete and or create such a physical channel.
 
@@ -13,7 +13,7 @@ While querying properties of virtual channels is a valid access pattern, a
 configuration of a virtual channel is not possible.
 
 According to the REST paradigm, querying REST objects is done via HTTP GET requests.
-Modifying a REST object is normally done with PUT method. On a marjoram device,
+Modifying a REST object is normally done with PUT method. On a XPL device,
 PUT and POST methods are handled equally.
 
 So, to configure a dedicated physical channel, issue a PUT request to its URL.
