@@ -26,6 +26,7 @@ The possible physical channel **modes** depends on the physical channel class an
       - type ``di``: ``normal``, ``flipflop``
       - type ``do``: ``normal``, ``pulse``
       - type ``ai``: ``0-10 V``, ``1-10 V``, ``0-20 mA``, ``4-20 mA``
+      - type ``ao``: ``0-10 V``, ``1-10 V``
 
   * for class ``serial``:
 
@@ -91,6 +92,17 @@ type
   **JSON datatype**: string
 
   **Description**: Channel type (depends on ``class``, see above).
+
+supported_types
+  **Property class**: config
+
+  **Availability**: class ``serial`` or class ``io``
+
+  **JSON datatype**: array
+
+  **Description**: This array contains a list of strings which reports the hardware capabilities
+  of the corresponding channel. This depends on the XPL device variant. The strings in this list
+  are valid strings for the ``type`` property.
 
 mode
   **Property class**: config
@@ -189,7 +201,7 @@ pulses_per_unit
 unit
   **Property class**: config (for class ``io`` and type ``s0``), state else
 
-  **Availability**: class ``io`` and (type ``s0`` or type ``ai``)
+  **Availability**: class ``io`` and (type ``s0`` or type ``ai`` or type ``ao``)
 
   **JSON datatype**: string
 
@@ -213,7 +225,7 @@ value
 normalized_value
   **Property class**: state
 
-  **Availability**: class ``io`` and type ``ai``
+  **Availability**: class ``io`` and (type ``ai`` or type ``ao``)
 
   **JSON datatype**: number
 
