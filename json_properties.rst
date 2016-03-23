@@ -63,7 +63,7 @@ label
   **JSON datatype**: string
 
   **Description**: User-defined name/label to associate the channel with, used e.g.
-  in the web frontend.
+  in the web frontend. Up to 16 characters (bytes) can be stored.
 
 enabled
   **Property class**: config
@@ -180,15 +180,6 @@ threshold
   **Description**: Voltage level (normalized 16-bit value) to detect the
   input as logical 1.
 
-offset
-  **Property class**: config
-
-  **Availability**: class ``io`` and type ``s0``
-
-  **JSON datatype**: number
-
-  **Description**: User-supplied value to calculate the current energy reading.
-
 pulses_per_unit
   **Property class**: config
 
@@ -206,21 +197,24 @@ unit
   **JSON datatype**: string
 
   **Description**: For a channel configured as S0 input, this is a user-supplied
-  string; for an channel configured as analog input, this is a fixed string
-  ``mA`` or  ``V`` depending on the physical capabilities/configuration of
-  the channel.
+  string up to 16 characters (bytes);
+  for an channel configured as analog input, this is a fixed string ``mA`` or
+  ``V`` depending on the physical capabilities/configuration of the channel.
 
 value
-  **Property class**: state
+  **Property class**: state (for class ``io`` and type ``s0`` additionally config)
 
   **Availability**: class ``io``
 
   **JSON datatype**: number
 
   **Description**: This is the current/actual value of this channel. For an
-  analog or s0 channel, this is a floating point number which must be
+  analog or S0 channel, this is a floating point number which must be
   interpreted together with ``unit``; for a digital channel, this can only
   have the values ``0`` or ``1``.
+  Note: When configuring a S0 channel and both ``pulse_counter`` and ``value``
+  are contained within the request, then both values must correspond to each
+  other, otherwise the request will fail.
 
 normalized_value
   **Property class**: state
@@ -233,14 +227,17 @@ normalized_value
   into a 16-bit value, i.e. 0-65535. This way it is possible to
   interconnect different analog types.
 
-raw_value
-  **Property class**: state
+pulse_counter
+  **Property class**: state and config
 
   **Availability**: class ``io`` and type ``s0``
 
   **JSON datatype**: number
 
   **Description**: Contains the raw value of the internal impulse counter.
+  Note: When configuring a S0 channel and both ``pulse_counter`` and ``value``
+  are contained within the request, then both values must correspond to each
+  other, otherwise the request will fail.
 
 baudrate
   **Property class**: config
