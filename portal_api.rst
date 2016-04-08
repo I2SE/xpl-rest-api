@@ -1,11 +1,10 @@
 Terminology
 ===========
 
-
-local Network: the ethernet / poweline network inside a users home
-local device: the Internet of Things device that is installed in a local network
-portal: a server in the internet that can be used to get the IPv4 address of the local device
-client: a device (like a PC, Smartphone) that wants to connect to the local device
+- local Network: the ethernet / poweline network inside a users home
+- local device: the Internet of Things device that is installed in a local network
+- portal: a server in the internet that can be used to get the IPv4 address of the local device
+- client: a device (like a PC, Smartphone) that wants to connect to the local device
 
 Problem to target
 =================
