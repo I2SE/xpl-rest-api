@@ -9,8 +9,6 @@ I2SE XPL devices API documentation
 REST API documentation
 ----------------------
 
-Contents:
-
 .. toctree::
    :maxdepth: 2
 
@@ -23,11 +21,10 @@ Contents:
    parameters
    json_properties
    error_handling
+   examples
 
 Portal API documentation
 ------------------------
-
-Contents:
 
 .. toctree::
    :maxdepth: 2
