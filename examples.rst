@@ -495,10 +495,12 @@ are retrieved.
 Python example
 ~~~~~~~~~~~~~~
 
-The following Python example relies on the `Python requests library <http://docs.python-requests.org/en/master/>`.
+The following Python example relies on the `Python requests library`_.
 It assumes that you already configured a given channel on your XPL Rail device
 as digitial output and allows to switch such a channel on or off.
 Intended as example, it does not do much error checking - this is left as an exercise to the reader ;-)
+
+.. _Python requests library: http://docs.python-requests.org/en/master/
 
 .. literalinclude:: xpl-on-off.py
    :language: python
@@ -514,4 +516,16 @@ Here too, there is no much error checking and you should really use some library
 
 .. literalinclude:: xpl-on-off.php
    :language: php
+   :linenos:
+
+JavaScript/NodeJS example
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The following example is written in JavaScript. You can embedd it within a custom
+web page, or use it in a NodeJS server environment.
+It also assumes that you already configured a given channel on your XPL Rail device
+as digitial output and allows to switch such a channel on or off.
+
+.. literalinclude:: xpl-on-off.js
+   :language: js
    :linenos:
