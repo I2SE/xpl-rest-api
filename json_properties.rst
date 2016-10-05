@@ -212,6 +212,7 @@ value
   analog or S0 channel, this is a floating point number which must be
   interpreted together with ``unit``; for a digital channel, this can only
   have the values ``0`` or ``1``.
+
   Note: When configuring a S0 channel and both ``pulse_counter`` and ``value``
   are contained within the request, then both values must correspond to each
   other, otherwise the request will fail.
@@ -360,6 +361,7 @@ active_connection
   but only receive a notification when data is transferred.
 
 
+
 Virtual channels
 ----------------
 
@@ -427,3 +429,462 @@ stats
   **JSON datatype**: Object
 
   **Description**: Statistics counter for the virtual serial channel.
+
+
+
+.. _device_information:
+
+Device information
+------------------
+
+The device information JSON object consists of some properties which describe details
+of the XPL device. For this object, no property classes are implemented.
+
+This JSON object has the following read-only properties:
+
+product
+  **JSON datatype**: string
+
+  **Description**: Contains the product code of this device.
+
+modelname
+  **JSON datatype**: string
+
+  **Description**: Contains the modell name string of this device.
+
+hardware_version
+  **JSON datatype**: string
+
+  **Description**: Contains the hardware version string of this device.
+
+software_version
+  **JSON datatype**: string
+
+  **Description**: Contains the software version string of this device.
+
+hostname
+  **JSON datatype**: string
+
+  **Description**: Contains the software version string of this device.
+
+mac_address
+  **JSON datatype**: string
+
+  **Description**: Contains the MAC address of the main processor of this device.
+
+mac_address_plc
+  **JSON datatype**: string
+
+  **Description**: Contains the MAC address of the powerline processor of this device.
+
+serial
+  **JSON datatype**: string
+
+  **Description**: Contains the serial number of this device.
+
+uuid
+  **JSON datatype**: string
+
+  **Description**: Contains the devices's UUID. This UUID is generated based on a unique
+  serial number of the embedded microcontroller and the MAC address of this device.
+
+
+
+.. _powerline_network:
+
+Powerline Network Details
+-------------------------
+
+The powerline network JSON object consists of some properties which describe details
+of the powerline network. For this object, no property classes are implemented.
+
+This JSON object has the following properties:
+
+nid
+  **JSON datatype**: string
+
+  **Availability**: always
+
+  **Description**: Contains the hexadecimal representation of the powerline network identifier.
+
+short_network_id
+  **JSON datatype**: number
+
+  **Availability**: always
+
+  **Description**: Contains the short network id of powerline network.
+
+cco
+  **JSON datatype**: object
+
+  **Availability**: always
+
+  **Description**: Contains information about the current powerline's central coordinator.
+  This object has the following properties itself:
+
+  mac_address
+    **JSON datatype**: string
+
+    **Availability**: always
+
+    **Description**: Contains the MAC address of the current CCo.
+
+
+  tei
+    **JSON datatype**: number
+
+    **Availability**: always
+
+    **Description**: Contains the terminal equipment number of the current CCo.
+
+result
+  **JSON datatype**: number
+
+  **Availability**: after remote pairing action
+
+  **Description**: Only present, when a remote pairing operation was triggered.
+  Represents the result of this operation, i.e. it contains zero
+  as long as the operation is not completed or was not successfully, see below.
+
+While the properties above are read-only, this object allows to add a remote device
+via DAK (Device Access Key) to the powerline network. For this, issue a PUT request
+to this object and provide a JSON object consisting of a single 'dak' property
+which contains the DAK string of the device to add. Note, that a simple DAK string
+is converted XPL internally to it's binary representation which is the common
+use-case. However, it's also possible to give a hexadecimal string representation
+of the DAK - in this case, it is used as is.
+
+.. code-block:: none
+
+    PUT /api/powerline/network HTTP/1.1
+    Content-Length: 38
+    Content-Type: application/json
+    Accept: application/json
+
+    {
+        "dak": "ABCD-EFGH-IJKL-MNOP"
+    }
+
+After this HTTP request, the XPL device will begin to perform the requested
+action by sending out a HomePlug AV packet to its powerline processor. Once
+this packet is sent, the powerline network JSON object will contain the ''result''
+property. In other words, this property does not show up immediately, but it can
+take a short time (typically less than 1 s). The value of this property is zero
+at the beginning which means that the operation was not successfully. However,
+it may take some time until success is reported from lower protocol stack. In this
+case, the value of the property becomes 1.
+So it's recommended to issue the PUT request, wait some seconds (e.g. 30s) and then
+query the operation result with a GET request.
+
+
+
+.. _powerline_local:
+
+Powerline Local Device Details
+------------------------------
+
+This JSON object contains data of the XPL device's powerline controller.
+
+mac_address
+  **JSON datatype**: string
+
+  **Description**: Contains the hexadecimal representation of the powerline
+  controller's MAC address.
+
+tei
+  **JSON datatype**: number
+
+  **Description**: Contains the terminal equipment number of the device within
+  the powerline network.
+
+chipset
+  **JSON datatype**: string
+
+  **Description**: Contains the chipset name.
+
+fw_version
+  **JSON datatype**: string
+
+  **Description**: Contains the firmware version string of the powerline chipset.
+
+usr
+  **JSON datatype**: string
+
+  **Description**: Contains the user string of the powerline PIB.
+
+mfg
+  **JSON datatype**: string
+
+  **Description**: Contains the manufacturer string of the powerline PIB.
+
+dak
+  **JSON datatype**: string
+
+  **Description**: Contains the hexadecimal representation of the powerline
+  controller's DAK (Device Access Key).
+
+nmk
+  **JSON datatype**: string
+
+  **Description**: Contains the hexadecimal representation of the powerline's
+  network management keys.
+
+is_cco:
+  **JSON datatype**: number
+
+  **Description**: When the current XPL device has the CCo role of the powerline
+  network, then this property is present and contains one. If not, then this
+  property has the value zero and is obmitted.
+
+The properties above are all read-only, except the ''nmk'' property: issuing a
+PUT request to it allows to associate to another powerline network:
+
+.. code-block:: none
+
+    PUT /api/powerline/local HTTP/1.1
+    Content-Length: 41
+    Content-Type: application/json
+    Accept: application/json
+
+    {
+        "nmk": "SecretPowerlineNetwork"
+    }
+
+Note, that a simple NMK string is converted XPL internally to it's binary
+representation which is the usual use-case. However, it's also possible to
+give a hexadecimal string representation of the NMK - in this case, it is used
+as is:
+
+.. code-block:: none
+
+    PUT /api/powerline/local HTTP/1.1
+    Content-Length: 66
+    Content-Type: application/json
+    Accept: application/json
+
+    {
+        "nmk": "B2:C5:1F:63:4E:43:A9:D4:B9:0F:DF:61:C4:ED:90:DD"
+    }
+
+After this HTTP request, the XPL device will begin to perform the requested
+action by sending out a HomePlug AV packet to its powerline processor. Once
+this packet is sent, the powerline network JSON object will contain the ''result''
+property. In other words, this property does not show up immediately, but it can
+take a short time (typically less than 1 s). The value of this property is zero
+at the beginning which means that the operation was not successfully. However,
+it may take some time until success is reported from lower protocol stack. In this
+case, the value of the property becomes 1.
+So it's recommended to issue the PUT request, wait some seconds (e.g. 30s) and then
+query the operation result with a GET request.
+
+This JSON object also allows further actions being performed on the XPL device.
+For this you have to issue a PUT request which consists of a single JSON object
+with a string property called ''action''. The possible actions are listed below:
+
++------------------+------------------------------------------------------------+
+| Value            | Action performed                                           |
++==================+============================================================+
+| factory_defaults | This resets the powerline chipset to its factory defaults. |
++------------------+------------------------------------------------------------+
+| randomize_nmk    | This assigns a random network management key to the XPL    |
+|                  | device, or -in other words- leave the current powerline    |
+|                  | network.                                                   |
++------------------+------------------------------------------------------------+
+| pbsc             | Performs Push Button Simple Connect.                       |
+|                  | This is equivalent to physically pressing the Push Button  |
+|                  | at the front panel of the XPL device. See user manual      |
+|                  | for details.                                               |
++------------------+------------------------------------------------------------+
+
+Example: The following PUT request resets the powerline chipset to its
+factory defaults:
+
+.. code-block:: none
+
+    PUT /api/powerline/local HTTP/1.1
+    Content-Length: 38
+    Content-Type: application/json
+    Accept: application/json
+
+    {
+        "action": "factory_defaults"
+    }
+
+
+
+.. _powerline_stations:
+
+Powerline Station Details
+-------------------------
+
+This JSON object represents a powerline station within the current powerline network.
+Please note, that detail informations of the other devices must be collected by
+quering these devices. This may take some time, and also not all devices of other
+manufacturers will report all requested information. Thus some properties might
+be missing for single stations.
+
+This object is read-only, no actions can be performed on the list and/or list entries.
+
+tei
+  **JSON datatype**: number
+
+  **Availability**: always
+
+  **Description**: Contains the terminal equipment number of the station.
+
+mac_address
+  **JSON datatype**: string
+
+  **Availability**: always
+
+  **Description**: Contains the MAC address of the station.
+
+avg_data_rate
+  **JSON datatype**: object
+
+  **Availability**: always
+
+  **Description**: Contains average data rates as seen by the XPL device.
+  This object has the following properties itself:
+
+  rx
+    **JSON datatype**: number
+
+    **Availability**: always
+
+    **Description**: Average receive data rate.
+
+  tx
+    **JSON datatype**: number
+
+    **Availability**: always
+
+    **Description**: Average transmit data rate.
+
+chipset
+  **JSON datatype**: string
+
+  **Availability**: optional
+
+  **Description**: Contains the chipset name of the station's powerline chipset.
+
+fw_version
+  **JSON datatype**: string
+
+  **Availability**: optional
+
+  **Description**: Contains the firmware version string of the station's powerline chipset.
+
+usr
+  **JSON datatype**: string
+
+  **Availability**: optional
+
+  **Description**: Contains the user string of the station's powerline PIB.
+
+mfg
+  **JSON datatype**: string
+
+  **Availability**: optional
+
+  **Description**: Contains the manufacturer string of the station's powerline PIB.
+
+is_cco:
+  **JSON datatype**: number
+
+  **Availability**: optional
+
+  **Description**: When this station has the CCo role of the powerline
+  network, then this property is present and contains one. If not, then this
+  property has the value zero and is obmitted.
+
+neighbor:
+  **JSON datatype**: string
+
+  **Availability**: optional
+
+  **Description**: When this station is an XPL device and has a neighbor entry,
+  then this property contains the MAC address of the corresponding neighbor
+  list item.
+
+
+
+.. _powerline_neighbors:
+
+Neighbor Details
+----------------
+
+This JSON object stores detail information about detected XPL neighbor devices, i.e.
+other XPL devices found in the same powerline network.
+
+Such other XPL devices - called neighbor - are represented as key-value pair,
+where the name of the key is the MAC address of the neighbors main processor, and
+the value is a JSON object with detail information.
+
+Such a neighbor JSON detail object has the following properties:
+
+product
+  **Property class**: -
+
+  **JSON datatype**: string
+
+  **Availability**: always
+
+  **Description**: Contains the product code of this neighbor.
+
+hardware_version
+  **Property class**: details
+
+  **JSON datatype**: string
+
+  **Availability**: always
+
+  **Description**: Contains the hardware version string of this neighbor.
+
+software_version
+  **Property class**: details
+
+  **JSON datatype**: string
+
+  **Availability**: always
+
+  **Description**: Contains the software version string of this neighbor.
+
+hostname
+  **Property class**: -
+
+  **JSON datatype**: string
+
+  **Availability**: always
+
+  **Description**: Contains the software version string of this device.
+
+mac_address
+  **Property class**: details
+
+  **JSON datatype**: string
+
+  **Availability**: always
+
+  **Description**: Contains the MAC address of the main processor of this neighbor.
+
+serial
+  **Property class**: -
+
+  **JSON datatype**: string
+
+  **Availability**: always
+
+  **Description**: Contains the serial number of this neighbor.
+
+ip_address
+  **Property class**: -
+
+  **JSON datatype**: string
+
+  **Availability**: always
+
+  **Description**: Contains the neighbors's current IPv4 address.
+
+This JSON object is read-only, no actions can be performed on the object itself
+and/or sub-objects.
