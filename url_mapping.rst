@@ -73,7 +73,7 @@ Powerline network status/configuration
 
 As the XPL devices are powerline devices, it's possible to obtain some details of the powerline network
 from the device and to trigger some powerline related actions. This information is bundled in the
-''/api/powerline'' hierarchy, which consists consists of four sub-elements:
+''/api/powerline'' hierarchy, which consists of four sub-elements:
 
   * ``http://<device>/api/powerline/network``
   * ``http://<device>/api/powerline/local``

@@ -3,14 +3,14 @@ Examples
 
 
 cURL examples
-~~~~~~~~~~~~~
+-------------
 
 The following examples uses curl which is available in nearly all Linux distributions.
 It also shows parts of the communication, e.g. the received HTTP headers in the response.
 
 
 Query common XPL Rail device information
-----------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This example queries common device properties.
 
@@ -57,7 +57,7 @@ This example queries common device properties.
 
 
 Check configuration status of a physical channel
-------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This example queries the current configuration of the physical channel 1.
 
@@ -97,7 +97,7 @@ This example queries the current configuration of the physical channel 1.
 
 
 Configure physical channel 1 as Digitial Output
------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This example reconfigures the physical channel 1 as digital output.
 
@@ -147,7 +147,7 @@ This example reconfigures the physical channel 1 as digital output.
 
 
 Switch channel 1 (Digitial Output) on
--------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This example switches the physical digital channel on.
 
@@ -197,7 +197,7 @@ This example switches the physical digital channel on.
 
 
 Configure physical channel 1 as Digitial Input
-----------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: shell
 
@@ -245,7 +245,7 @@ Configure physical channel 1 as Digitial Input
 
 
 Query state of physical channel 1 (Digitial Input)
---------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In this example, the JSON response should only contain the actual state, but not
 configuration properties of the channel.
@@ -284,7 +284,7 @@ configuration properties of the channel.
 
 
 Query current readings of physical channel 1 (S0 Input)
--------------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In this example, the physical channel 1 is configured as S0 input and the
 query retrieves the current meter reading.
@@ -330,7 +330,7 @@ query retrieves the current meter reading.
 
 
 Query current configuration and state of all physical channels
---------------------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: shell
 
@@ -434,7 +434,7 @@ Query current configuration and state of all physical channels
 
 
 Query only current state of all physical channels
--------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This is an example of an optimized query, where only current state properties
 are retrieved.
@@ -493,7 +493,7 @@ are retrieved.
 
 
 Python example
-~~~~~~~~~~~~~~
+--------------
 
 The following Python example relies on the `Python requests library`_.
 It assumes that you already configured a given channel on your XPL Rail device
@@ -507,7 +507,7 @@ Intended as example, it does not do much error checking - this is left as an exe
    :linenos:
 
 PHP example
-~~~~~~~~~~~
+-----------
 
 The following example written in PHP uses a raw socket to connect to an XPL Rail.
 It assumes that you already configured a given channel on your XPL Rail device
@@ -519,7 +519,7 @@ Here too, there is no much error checking and you should really use some library
    :linenos:
 
 JavaScript/NodeJS example
-~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------
 
 The following example is written in JavaScript. You can embedd it within a custom
 web page, or use it in a NodeJS server environment.
