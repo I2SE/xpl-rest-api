@@ -94,7 +94,7 @@ type
   **Description**: Channel type (depends on ``class``, see above).
 
 supported_types
-  **Property class**: config
+  **Property class**: caps
 
   **Availability**: class ``serial`` or class ``io``
 

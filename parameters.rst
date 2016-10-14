@@ -5,7 +5,8 @@ When querying a RESTful object, it's possible to filter out and/or request prope
 For this, a **property class** has been assigned to some properties.
 
 For the JSON objects that are part of the ''/api/channel'' hierarchy,
-there exists the property classes *structual*, *config* and *state* at the moment.
+there exists the property classes *structual*, *config*, *state* and *caps* (for capabilities)
+at the moment.
 
 The default object view includes the classes *config* and *state*, but hides *structural*.
 You get this default view when you do not supply any of the following, optional parameters.
@@ -13,9 +14,11 @@ You get this default view when you do not supply any of the following, optional 
 +-----------+-----------------------------------+----------------------------------------------------------+
 | Parameter | Value                             | Meaning                                                  |
 +===========+===================================+==========================================================+
-| filter    | *structural*, *config* or *state* | This *hides* the properties of the given class.          |
+| filter    | *structural*, *config*, *state*   | This *hides* the properties of the given class.          |
+|           | or *caps*                         |                                                          |
 +-----------+-----------------------------------+----------------------------------------------------------+
-| unfilter  | *structural*, *config* or *state* | This forces the properties of the given class to appear. |
+| unfilter  | *structural*, *config*, *state*   | This forces the properties of the given class to appear. |
+|           | or *caps*                         |                                                          |
 +-----------+-----------------------------------+----------------------------------------------------------+
 
 So for example to only query the current states of all physical channels, issue the following
