@@ -718,8 +718,8 @@ Powerline Station Details
 -------------------------
 
 This JSON object represents a powerline station within the current powerline network.
-Please note, that detail informations of the other devices must be collected by
-quering these devices. This may take some time, and also not all devices of other
+Please note, that detail information of the other devices must be collected by
+querying these devices. This may take some time, and also not all devices of other
 manufacturers will report all requested information. Thus some properties might
 be missing for single stations.
 
@@ -752,14 +752,14 @@ avg_data_rate
 
     **Availability**: always
 
-    **Description**: Average receive data rate.
+    **Description**: Average receive data rate (in Mbit).
 
   tx
     **JSON datatype**: number
 
     **Availability**: always
 
-    **Description**: Average transmit data rate.
+    **Description**: Average transmit data rate (in Mbit).
 
 chipset
   **JSON datatype**: string
@@ -796,7 +796,7 @@ is_cco:
 
   **Description**: When this station has the CCo role of the powerline
   network, then this property is present and contains one. If not, then this
-  property has the value zero and is obmitted.
+  property has the value zero and is omitted.
 
 neighbor:
   **JSON datatype**: string
@@ -821,14 +821,19 @@ Such other XPL devices - called neighbor - are represented as key-value pair,
 where the name of the key is the MAC address of the neighbors main processor, and
 the value is a JSON object with detail information.
 
-Such a neighbor JSON detail object has the following properties:
+Such a neighbor JSON detail object has properties as explained below. Please
+note, that gathering the information from a neighbor consists of several steps
+so some details might not be available yet at the time of querying this object.
+
+Please note, that properties of the class ''details'' are only included when
+requested explicitely.
 
 product
   **Property class**: -
 
   **JSON datatype**: string
 
-  **Availability**: always
+  **Availability**: optional
 
   **Description**: Contains the product code of this neighbor.
 
@@ -837,7 +842,7 @@ hardware_version
 
   **JSON datatype**: string
 
-  **Availability**: always
+  **Availability**: optional
 
   **Description**: Contains the hardware version string of this neighbor.
 
@@ -846,7 +851,7 @@ software_version
 
   **JSON datatype**: string
 
-  **Availability**: always
+  **Availability**: optional
 
   **Description**: Contains the software version string of this neighbor.
 
@@ -855,7 +860,7 @@ hostname
 
   **JSON datatype**: string
 
-  **Availability**: always
+  **Availability**: optional
 
   **Description**: Contains the software version string of this device.
 
@@ -873,7 +878,7 @@ serial
 
   **JSON datatype**: string
 
-  **Availability**: always
+  **Availability**: optional
 
   **Description**: Contains the serial number of this neighbor.
 
@@ -882,9 +887,9 @@ ip_address
 
   **JSON datatype**: string
 
-  **Availability**: always
+  **Availability**: optional
 
-  **Description**: Contains the neighbors's current IPv4 address.
+  **Description**: Contains the neighbor's current IPv4 address.
 
 This JSON object is read-only, no actions can be performed on the object itself
 and/or sub-objects.
