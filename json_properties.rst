@@ -550,7 +550,7 @@ While the properties above are read-only, this object allows to add a remote dev
 via DAK (Device Access Key) to the powerline network. For this, issue a PUT request
 to this object and provide a JSON object consisting of a single 'dak' property
 which contains the DAK string of the device to add. Note, that a simple DAK string
-is converted XPL internally to it's binary representation which is the common
+is converted XPL internally to its binary representation which is the common
 use-case. However, it's also possible to give a hexadecimal string representation
 of the DAK - in this case, it is used as is.
 
